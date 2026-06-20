@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+*.log
+.DS_Store
+applications/*
+!applications/.gitkeep
+cover_letters/*
+!cover_letters/.gitkeep
+resumes/optimized_*
