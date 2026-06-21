@@ -10,3 +10,5 @@ cover_letters/*
 !cover_letters/.gitkeep
 resumes/optimized_*
 config/candidate_profile.json
+
+resumes/master_resume.txt
