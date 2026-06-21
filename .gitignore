@@ -9,3 +9,4 @@ applications/*
 cover_letters/*
 !cover_letters/.gitkeep
 resumes/optimized_*
+config/candidate_profile.json

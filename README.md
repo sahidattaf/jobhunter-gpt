@@ -19,51 +19,90 @@ jobhunter-gpt/
 ├── .env.example
 ├── .gitignore
 ├── claude_prompt.md
-├── job_search_agent.py
-├── keyword_extractor.py
-├── resume_optimizer.py
-├── coverletter_generator.py
-├── tracker.py
-├── linkedin_agent.py
+├── candidate_profile.py       ← load and validate config/candidate_profile.json
+├── fit_scorer.py              ← score keyword/skill/location/remote fit (0-100)
+├── job_search_agent.py        ← orchestrator: read files → generate package → log
+├── keyword_extractor.py       ← ATS keyword extraction
+├── resume_optimizer.py        ← ATS review draft with preserved source resume
+├── coverletter_generator.py   ← conservative cover-letter draft
+├── tracker.py                 ← CSV application log
+├── config/
+│   └── candidate_profile.example.json   ← copy → candidate_profile.json (gitignored)
 ├── prompts/
+│   ├── keyword_extractor_prompt.md
+│   └── resume_optimizer_prompt.md
+├── resumes/                   ← place master_resume.txt here
+├── job_descriptions/          ← place one .txt per approved job posting
+├── applications/              ← generated review packages (gitignored)
+├── cover_letters/             ← generated cover letters (gitignored)
 ├── data/
-├── tests/
-└── .github/workflows/
+│   ├── applications.csv       ← auto-created tracker
+│   └── google_sheet_template.csv
+└── tests/
+    └── test_core.py
 ```
 
-## Quick start
+## Quick start (Windows)
 
-```bash
-python -m venv .venv
-# Windows PowerShell
+```powershell
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python -m unittest discover -s tests -v
+py -m unittest discover -s tests -v
 ```
 
-Extract keywords:
+## Set up your candidate profile
 
-```bash
-python keyword_extractor.py --input job_descriptions/example.txt --output data/keywords.txt
+```powershell
+copy config\candidate_profile.example.json config\candidate_profile.json
 ```
 
-Create a local application package from an approved job description:
+Open `config\candidate_profile.json` and replace every field with your real, verified
+information. This file is listed in `.gitignore` and will never be committed.
 
-```bash
-python job_search_agent.py \
-  --resume resumes/master_resume.txt \
-  --job job_descriptions/example.txt \
-  --company "Example Company" \
-  --title "AI Automation Specialist" \
-  --url "https://example.com/jobs/123"
+## Extract keywords
+
+```powershell
+py keyword_extractor.py --input job_descriptions\example.txt --output data\keywords.txt
 ```
 
-The workflow writes files locally and adds a `Prepared` row to the CSV tracker. It does not apply to the job.
+## Prepare a local application package
+
+```powershell
+py job_search_agent.py `
+  --resume resumes\master_resume.txt `
+  --job job_descriptions\example-company-ai-specialist.txt `
+  --company "Example Company" `
+  --title "AI Automation Specialist" `
+  --url "https://example.com/jobs/123" `
+  --profile config\candidate_profile.json
+```
+
+The workflow:
+
+1. Reads your resume and the job description.
+2. Extracts ATS keywords and reports matches and gaps.
+3. Calculates a fit score (0-100) across keyword overlap, verified skills, location, and
+   remote preference.
+4. Generates a resume review draft and a cover-letter draft in
+   `applications\<company-slug>\`.
+5. Appends a row — including the fit score — to `data\applications.csv`.
+6. **Does not submit anything.**  Review all files before taking any action.
+
+## Run tests
+
+```powershell
+py -m unittest discover -s tests -v
+```
 
 ## Google Sheets
 
-Import `data/google_sheet_template.csv` into Google Sheets. The CSV columns match the local tracker and can later be synchronized through an approved Google service account integration.
+Import `data/google_sheet_template.csv` into Google Sheets. The CSV columns match the
+local tracker and can later be synchronized through an approved Google service account
+integration.
 
 ## Claude Code
 
-Open this repository in VS Code and paste `claude_prompt.md` into Claude Code. The prompt instructs Claude to inspect, test, and improve the project without fabricating candidate data or enabling blind mass applications.
+Open this repository in VS Code and paste `claude_prompt.md` into Claude Code. The
+prompt instructs Claude to inspect, test, and improve the project without fabricating
+candidate data or enabling blind mass applications.

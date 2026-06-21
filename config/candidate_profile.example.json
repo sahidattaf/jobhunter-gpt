@@ -1,0 +1,41 @@
+{
+  "_instructions": "Copy this file to config/candidate_profile.json and fill in your real details. That file is gitignored and will never be committed.",
+  "full_name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "phone": "+1-555-000-0000",
+  "location": "New York, NY",
+  "linkedin_url": "https://linkedin.com/in/janedoe",
+  "target_job_titles": [
+    "AI Automation Specialist",
+    "Business Operations Analyst",
+    "Customer Success Manager"
+  ],
+  "preferred_locations": [
+    "New York, NY",
+    "Remote",
+    "Austin, TX"
+  ],
+  "remote_preference": "hybrid",
+  "verified_skills": [
+    "python",
+    "project management",
+    "customer success",
+    "salesforce",
+    "google sheets",
+    "data analysis",
+    "process improvement"
+  ],
+  "languages": [
+    "English (native)",
+    "French (conversational)"
+  ],
+  "years_of_experience": 5,
+  "salary_preference": {
+    "minimum": 75000,
+    "target": 90000,
+    "currency": "USD",
+    "basis": "annual"
+  },
+  "work_authorization": "US Citizen",
+  "notes": "Prefer roles with clear career growth. Open to contract-to-hire. Not interested in pure sales quotas."
+}
