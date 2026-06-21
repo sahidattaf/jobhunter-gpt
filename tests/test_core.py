@@ -3,7 +3,13 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from candidate_profile import validate_profile, load_profile
-from coverletter_generator import generate_cover_letter
+from coverletter_generator import (
+    generate_cover_letter,
+    extract_resume_summary,
+    extract_verified_strengths,
+    clean_keyword_phrases,
+    build_alignment_sentence,
+)
 from fit_scorer import score_fit, format_score_report
 from job_search_agent import prepare_application
 from keyword_extractor import extract_keywords
@@ -333,6 +339,194 @@ class PackageGenerationTests(unittest.TestCase):
             self.assertIn("Fit Score", details)
             self.assertIn("/100", details)
             self.assertIn("NEXT ACTION", details)
+
+
+# ── Cover letter v2 tests ─────────────────────────────────────────────────────
+
+class CoverLetterV2Tests(unittest.TestCase):
+    """Verify the improved cover letter generator produces clean, professional output."""
+
+    _RESUME_WITH_SUMMARY = (
+        "Jane Test\nNew York, NY\nEmail: jane@example.com\n\n"
+        "Professional Summary\n"
+        "Experienced customer success manager with a background in CRM tools "
+        "and account management across SaaS companies.\n\n"
+        "Core Skills\nCustomer success\nCRM\nAccount management\nSalesforce"
+    )
+    _RESUME_NO_SUMMARY = "Experience with customer success and CRM tools."
+    _JD = (
+        "Customer Success Manager role. Requires customer success and CRM experience. "
+        "Account management skills preferred. Remote position."
+    )
+    _PROFILE = {
+        "full_name": "Jane Test",
+        "verified_skills": ["customer success", "CRM", "account management"],
+        "preferred_locations": ["New York, NY"],
+        "remote_preference": "remote",
+    }
+
+    def _letter(self, resume=None, jd=None, company="Example Corp",
+                title="Customer Success Manager", name="Jane Test", profile=None):
+        return generate_cover_letter(
+            resume or self._RESUME_WITH_SUMMARY,
+            jd or self._JD,
+            company,
+            title,
+            name,
+            profile=profile or self._PROFILE,
+        )
+
+    # ── Structure checks ──────────────────────────────────────────────────────
+
+    def test_company_name_in_letter(self) -> None:
+        self.assertIn("Example Corp", self._letter())
+
+    def test_job_title_in_letter(self) -> None:
+        self.assertIn("Customer Success Manager", self._letter())
+
+    def test_candidate_name_in_letter(self) -> None:
+        self.assertIn("Jane Test", self._letter())
+
+    def test_letter_has_greeting(self) -> None:
+        self.assertIn("Dear Hiring Manager", self._letter())
+
+    def test_letter_has_closing(self) -> None:
+        letter = self._letter()
+        self.assertIn("Sincerely", letter)
+        self.assertIn("Thank you", letter)
+
+    def test_letter_length_reasonable(self) -> None:
+        letter = self._letter()
+        self.assertGreater(len(letter), 300)
+        self.assertLess(len(letter), 2500)
+
+    # ── Anti-fragment / no-raw-dump checks ───────────────────────────────────
+
+    def test_no_raw_keyword_comma_dump(self) -> None:
+        """Letter must not replicate the v1 pattern of raw extracted tokens in a comma list."""
+        import re
+        letter = generate_cover_letter(
+            "Experience with customer success and CRM.",
+            "Seeking customer success, CRM, salesforce experience.",
+            "Corp",
+            "Manager",
+            "Jane Test",
+        )
+        # v1 produced: "relevant to customer, success, crm, salesforce"
+        self.assertNotRegex(
+            letter.lower(),
+            r"relevant to \w+, \w+, \w+",
+            "Cover letter still uses raw keyword comma-dump (v1 anti-pattern)",
+        )
+
+    def test_clean_keyword_phrases_removes_fragments(self) -> None:
+        raw = ["real", "estate", "development", "real estate development", "github"]
+        result = clean_keyword_phrases(raw)
+        self.assertIn("real estate development", result)
+        self.assertNotIn("real", result)
+        self.assertNotIn("estate", result)
+        self.assertNotIn("development", result)
+        self.assertIn("github", result)  # not subsumed by any multi-word phrase
+
+    def test_clean_keyword_phrases_keeps_standalone_singles(self) -> None:
+        """Single words that are NOT components of any multi-word phrase are kept."""
+        result = clean_keyword_phrases(["github", "notion", "business development"])
+        self.assertIn("github", result)
+        self.assertIn("notion", result)
+        self.assertIn("business development", result)
+
+    # ── Placeholder / validation checks ──────────────────────────────────────
+
+    def test_placeholder_candidate_name_raises(self) -> None:
+        for placeholder in ("Candidate Name", "candidate", "Your Name", "Name Here"):
+            with self.subTest(placeholder=placeholder):
+                with self.assertRaises(ValueError) as ctx:
+                    generate_cover_letter(
+                        self._RESUME_NO_SUMMARY, self._JD, "Corp", "Title", placeholder
+                    )
+                self.assertIn("placeholder", str(ctx.exception).lower())
+
+    def test_empty_candidate_name_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            generate_cover_letter(
+                self._RESUME_NO_SUMMARY, self._JD, "Corp", "Title", ""
+            )
+
+    def test_missing_company_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            generate_cover_letter(self._RESUME_NO_SUMMARY, self._JD, "", "Title", "Jane Test")
+
+    def test_missing_title_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            generate_cover_letter(self._RESUME_NO_SUMMARY, self._JD, "Corp", "", "Jane Test")
+
+    # ── Summary extraction ────────────────────────────────────────────────────
+
+    def test_extract_resume_summary_finds_section(self) -> None:
+        summary = extract_resume_summary(self._RESUME_WITH_SUMMARY)
+        self.assertIn("customer success manager", summary.lower())
+        self.assertIn("crm", summary.lower())
+
+    def test_extract_resume_summary_returns_empty_when_absent(self) -> None:
+        summary = extract_resume_summary("Just some text. No sections here.")
+        self.assertEqual(summary, "")
+
+    def test_summary_used_in_letter_body(self) -> None:
+        """When the resume has a Professional Summary, its content must appear in the letter."""
+        letter = self._letter(resume=self._RESUME_WITH_SUMMARY)
+        self.assertIn("customer success manager", letter.lower())
+
+    def test_fallback_used_when_no_summary(self) -> None:
+        """When there is no summary section, the letter still produces a background paragraph."""
+        letter = self._letter(resume=self._RESUME_NO_SUMMARY)
+        self.assertGreater(len(letter), 300)
+        self.assertIn("Jane Test", letter)
+
+    # ── Verified strengths ────────────────────────────────────────────────────
+
+    def test_extract_verified_strengths_uses_profile_skills(self) -> None:
+        strengths = extract_verified_strengths(
+            self._RESUME_WITH_SUMMARY, self._JD, self._PROFILE
+        )
+        strength_lower = [s.lower() for s in strengths]
+        self.assertIn("customer success", strength_lower)
+
+    def test_extract_verified_strengths_no_invented_skills(self) -> None:
+        """Skills that appear in the profile but NOT in resume must not be in strengths."""
+        profile = {"verified_skills": ["quantum cryptography", "customer success"]}
+        strengths = extract_verified_strengths(
+            self._RESUME_WITH_SUMMARY, self._JD, profile
+        )
+        strength_lower = [s.lower() for s in strengths]
+        self.assertNotIn("quantum cryptography", strength_lower)
+
+    def test_build_alignment_sentence_two_items(self) -> None:
+        result = build_alignment_sentence(["AI automation", "business development"])
+        self.assertEqual(result, "AI automation and business development")
+
+    def test_build_alignment_sentence_three_items(self) -> None:
+        result = build_alignment_sentence(["A", "B", "C"])
+        self.assertIn("and C", result)
+        self.assertIn("A", result)
+
+    def test_build_alignment_sentence_empty(self) -> None:
+        result = build_alignment_sentence([])
+        self.assertIn("attached resume", result)
+
+    # ── No invented claims ────────────────────────────────────────────────────
+
+    def test_letter_does_not_invent_unsupported_skills(self) -> None:
+        """Skills absent from both resume and job description must not appear."""
+        letter = generate_cover_letter(
+            "Experience with Python scripting.",
+            "Python developer needed.",
+            "TechCorp",
+            "Python Developer",
+            "Jane Test",
+        )
+        self.assertNotIn("machine learning", letter.lower())
+        self.assertNotIn("kubernetes", letter.lower())
+        self.assertNotIn("blockchain", letter.lower())
 
 
 if __name__ == "__main__":

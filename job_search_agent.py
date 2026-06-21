@@ -54,7 +54,7 @@ def prepare_application(
 
     review_file.write_text(optimize_resume(resume, job_description), encoding="utf-8")
     letter_file.write_text(
-        generate_cover_letter(resume, job_description, company, title, candidate_name),
+        generate_cover_letter(resume, job_description, company, title, candidate_name, profile=profile),
         encoding="utf-8",
     )
 
