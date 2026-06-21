@@ -89,6 +89,28 @@ The workflow:
 5. Appends a row — including the fit score — to `data\applications.csv`.
 6. **Does not submit anything.**  Review all files before taking any action.
 
+## Review a generated package
+
+Before using any generated file, run the package reviewer to catch structural issues,
+placeholder text, missing fields, and short cover letters:
+
+```powershell
+py -m package_reviewer applications\gpt-innovation-by-attaf-ai-automation-specialist `
+  --candidate-name "Sahid Attaf"
+```
+
+The reviewer checks:
+
+- All required files are present
+- Company name and job title appear in the cover letter
+- No placeholder text ("Candidate Name", "Company Name", etc.)
+- Fit score and source URL are recorded
+- Source resume is preserved in the ATS review
+- Cover letter meets minimum length
+- No raw keyword dump patterns
+
+Returns `READY_FOR_HUMAN_REVIEW` (exit 0) or `NEEDS_FIXES` (exit 1).
+
 ## Run tests
 
 ```powershell

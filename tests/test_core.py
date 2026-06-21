@@ -3,6 +3,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from candidate_profile import validate_profile, load_profile
+from package_reviewer import review_package, format_review_report
 from coverletter_generator import (
     generate_cover_letter,
     extract_resume_summary,
@@ -527,6 +528,374 @@ class CoverLetterV2Tests(unittest.TestCase):
         self.assertNotIn("machine learning", letter.lower())
         self.assertNotIn("kubernetes", letter.lower())
         self.assertNotIn("blockchain", letter.lower())
+
+
+# ── Package reviewer tests ────────────────────────────────────────────────────
+
+class PackageReviewerTests(unittest.TestCase):
+    """Verify the package reviewer detects issues and reports clean packages correctly."""
+
+    # ── Shared fixtures ───────────────────────────────────────────────────────
+
+    def _good_cover(
+        self,
+        company: str = "Acme Corp",
+        title: str = "AI Specialist",
+        name: str = "Sahid Attaf",
+    ) -> str:
+        return (
+            f"Dear Hiring Manager,\n\n"
+            f"I am writing to express my interest in the {title} position at {company}.\n\n"
+            "My background includes verified experience in AI automation and business development. "
+            "I have kept this letter focused on information supported by my resume. "
+            "I welcome the opportunity to discuss how my background fits the needs of this role.\n\n"
+            "Thank you for your time and consideration.\n\n"
+            f"Sincerely,\n{name}\n"
+        )
+
+    def _good_details(
+        self,
+        company: str = "Acme Corp",
+        role: str = "AI Specialist",
+        url: str = "https://example.com/jobs/1",
+        score: str = "75",
+    ) -> str:
+        return (
+            f"Company: {company}\n"
+            f"Role: {role}\n"
+            f"Source: {url}\n"
+            f"Fit Score: {score}/100\n"
+            "Status: Prepared for human review\n"
+        )
+
+    def _good_review(self) -> str:
+        return (
+            "JOBHUNTERGPT ATS REVIEW\n"
+            "========================\n\n"
+            "Confirmed keyword matches (3): python, automation, business development\n\n"
+            "Keywords requiring human verification before use:\n"
+            "- machine learning\n\n"
+            "SOURCE RESUME — PRESERVED\n"
+            "=========================\n"
+            "Sahid Attaf\nExperience with Python, automation, and business development.\n"
+        )
+
+    def _make_package(
+        self,
+        root: Path,
+        cover: str | None = None,
+        details: str | None = None,
+        review: str | None = None,
+    ) -> Path:
+        """Create a package folder with the supplied file contents (None = omit file)."""
+        pkg = root / "test-package"
+        pkg.mkdir(parents=True, exist_ok=True)
+        if cover is not None:
+            (pkg / "cover-letter.txt").write_text(cover, encoding="utf-8")
+        if details is not None:
+            (pkg / "application-details.txt").write_text(details, encoding="utf-8")
+        if review is not None:
+            (pkg / "resume-review.txt").write_text(review, encoding="utf-8")
+        return pkg
+
+    # ── Complete package passes ───────────────────────────────────────────────
+
+    def test_complete_package_passes(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg, candidate_name="Sahid Attaf")
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertEqual(result["files_missing"], [])
+            self.assertIn("cover-letter.txt", result["files_found"])
+            self.assertIn("application-details.txt", result["files_found"])
+            self.assertIn("resume-review.txt", result["files_found"])
+            errors = [w for w in result["warnings"] if w.startswith("[ERROR]")]
+            self.assertEqual(errors, [], f"Unexpected errors: {errors}")
+
+    def test_package_path_in_result(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertIn("package_path", result)
+            self.assertIn("test-package", result["package_path"])
+
+    def test_files_found_and_missing_reported_accurately(self) -> None:
+        with TemporaryDirectory() as td:
+            # Only provide two of three required files
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=None,   # omit resume-review.txt
+            )
+            result = review_package(pkg)
+            self.assertIn("resume-review.txt", result["files_missing"])
+            self.assertNotIn("resume-review.txt", result["files_found"])
+            self.assertIn("cover-letter.txt", result["files_found"])
+
+    # ── Missing cover letter fails ────────────────────────────────────────────
+
+    def test_missing_cover_letter_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(
+                Path(td),
+                cover=None,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertIn("cover-letter.txt", result["files_missing"])
+
+    def test_missing_all_files_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(Path(td))  # no files
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertEqual(set(result["files_missing"]), set(["cover-letter.txt",
+                                                                  "application-details.txt",
+                                                                  "resume-review.txt"]))
+
+    # ── Placeholder text fails ────────────────────────────────────────────────
+
+    def test_placeholder_candidate_name_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            placeholder_cover = (
+                "Dear Hiring Manager,\n\n"
+                "I apply for the AI Specialist position at Acme Corp.\n\n"
+                "Sincerely,\nCandidate Name\n"
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=placeholder_cover,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertTrue(
+                any("Candidate Name" in w for w in result["warnings"]),
+                f"Expected placeholder warning, got: {result['warnings']}",
+            )
+
+    def test_placeholder_company_name_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            placeholder_cover = (
+                "Dear Hiring Manager,\n\n"
+                "I apply at Company Name.\n\n"
+                "Sincerely,\nSahid Attaf\n"
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=placeholder_cover,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertTrue(any("Company Name" in w for w in result["warnings"]))
+
+    def test_paste_job_description_placeholder_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            cover_with_paste = self._good_cover() + "\nPASTE REAL JOB DESCRIPTION HERE\n"
+            pkg = self._make_package(
+                Path(td),
+                cover=cover_with_paste,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertTrue(
+                any("PASTE REAL JOB DESCRIPTION HERE" in w for w in result["warnings"])
+            )
+
+    # ── Company name / job title missing from cover letter fails ─────────────
+
+    def test_company_name_missing_from_cover_letter_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            cover_no_company = (
+                "Dear Hiring Manager,\n\n"
+                "I am applying for a position.\n\n"
+                "Sincerely,\nSahid Attaf\n" * 5  # pad to pass length check
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=cover_no_company,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertTrue(
+                any("Acme Corp" in w and "not found" in w for w in result["warnings"])
+            )
+
+    def test_job_title_missing_from_cover_letter_fails(self) -> None:
+        with TemporaryDirectory() as td:
+            cover_no_title = (
+                "Dear Hiring Manager,\n\n"
+                "I am applying at Acme Corp for a great opportunity.\n\n"
+                "Sincerely,\nSahid Attaf\n" * 5
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=cover_no_title,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "NEEDS_FIXES")
+            self.assertTrue(
+                any("AI Specialist" in w and "not found" in w for w in result["warnings"])
+            )
+
+    # ── Advisory warnings ─────────────────────────────────────────────────────
+
+    def test_missing_fit_score_warns(self) -> None:
+        with TemporaryDirectory() as td:
+            details_no_score = (
+                "Company: Acme Corp\n"
+                "Role: AI Specialist\n"
+                "Source: https://example.com\n"
+                "Fit Score: Not calculated (no profile loaded)\n"
+                "Status: Prepared for human review\n"
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=details_no_score,
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertTrue(
+                any("fit score" in w.lower() for w in result["warnings"]),
+                f"Expected fit score warning, got: {result['warnings']}",
+            )
+
+    def test_missing_source_url_warns(self) -> None:
+        with TemporaryDirectory() as td:
+            details_no_url = (
+                "Company: Acme Corp\n"
+                "Role: AI Specialist\n"
+                "Source: \n"
+                "Fit Score: 75/100\n"
+                "Status: Prepared for human review\n"
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=details_no_url,
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertTrue(
+                any("url" in w.lower() or "source" in w.lower() for w in result["warnings"])
+            )
+
+    def test_short_cover_letter_warns(self) -> None:
+        with TemporaryDirectory() as td:
+            short_cover = (
+                "Dear Hiring Manager,\n\n"
+                "I apply for the AI Specialist position at Acme Corp.\n\n"
+                "Sincerely,\nSahid Attaf\n"
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=short_cover,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertTrue(
+                any("short" in w.lower() or "characters" in w.lower() for w in result["warnings"])
+            )
+
+    def test_missing_resume_preserved_section_warns(self) -> None:
+        with TemporaryDirectory() as td:
+            review_no_preserved = (
+                "JOBHUNTERGPT ATS REVIEW\n"
+                "Confirmed keyword matches: python\n"
+                # No SOURCE RESUME — PRESERVED section
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=review_no_preserved,
+            )
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertTrue(
+                any("preserved" in w.lower() for w in result["warnings"])
+            )
+
+    def test_raw_keyword_dump_warns(self) -> None:
+        with TemporaryDirectory() as td:
+            v1_cover = self._good_cover().replace(
+                "I am writing",
+                "My background includes experience relevant to business, automation, code, estate. I am writing",
+            )
+            pkg = self._make_package(
+                Path(td),
+                cover=v1_cover,
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg)
+            self.assertTrue(
+                any("keyword" in w.lower() or "raw" in w.lower() for w in result["warnings"])
+            )
+
+    def test_no_candidate_name_provided_adds_advisory(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            # No candidate_name argument
+            result = review_package(pkg)
+            self.assertEqual(result["approval_status"], "READY_FOR_HUMAN_REVIEW")
+            self.assertTrue(
+                any("candidate name" in w.lower() for w in result["warnings"])
+            )
+
+    # ── format_review_report ──────────────────────────────────────────────────
+
+    def test_format_report_contains_status(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(
+                Path(td),
+                cover=self._good_cover(),
+                details=self._good_details(),
+                review=self._good_review(),
+            )
+            result = review_package(pkg, candidate_name="Sahid Attaf")
+            report = format_review_report(result)
+            self.assertIn("PACKAGE REVIEW REPORT", report)
+            self.assertIn(result["approval_status"], report)
+
+    def test_format_report_lists_missing_files(self) -> None:
+        with TemporaryDirectory() as td:
+            pkg = self._make_package(Path(td), cover=None, details=None, review=None)
+            result = review_package(pkg)
+            report = format_review_report(result)
+            self.assertIn("cover-letter.txt", report)
 
 
 if __name__ == "__main__":
