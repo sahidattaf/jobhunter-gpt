@@ -27,7 +27,10 @@ productively useful within a few weeks, not months.
 
 The question is whether the workflow design thinking and the ability to learn tools
 by building things is worth more to you than a candidate who already knows Salesforce
-but hasn't designed AI workflows from scratch. That's a trade-off only you can evaluate."
+but hasn't designed AI workflows from scratch. That's a trade-off only you can evaluate.
+
+I don't have enterprise platform experience yet, but I can show you the work
+directly — how I built it, how I tested it, and how I improve it."
 
 ---
 

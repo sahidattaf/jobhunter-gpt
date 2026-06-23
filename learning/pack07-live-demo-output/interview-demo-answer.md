@@ -15,8 +15,9 @@ Adjust to your own voice. Do not read from a script.**
 "Yes — let me share my screen. This is JobHunterGPT, a local Python prototype
 I built to automate the preparation side of a job search while keeping a human
 in the loop at every step. I'll show you the structure, run the test suite,
-and then run the package reviewer on a generated output. That's about five
-minutes. Ready?"
+and then run the package reviewer on a generated output. I don't have enterprise
+platform experience yet, but I can show you the work directly — how I built it,
+how I tested it, and how I improve it. That's about five minutes. Ready?"
 
 **Then run the demo script.**
 

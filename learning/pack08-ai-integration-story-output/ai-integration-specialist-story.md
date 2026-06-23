@@ -11,29 +11,41 @@ Use for: First impression, phone screen opener, LinkedIn connection note.
 
 ---
 
-"I'm an AI systems builder based in Curaçao. Over the past five years I've
-designed and built AI-powered workflows for business automation — my clearest
-example is JobHunterGPT, a human-in-the-loop Python pipeline I built from
-scratch that covers keyword extraction, fit scoring, cover letter generation,
-and output review. I don't have enterprise platform experience yet, but I
-understand the workflow design pattern and I can show you the work directly."
+"I'm an AI systems builder based in Curaçao. Over the past five years, I've
+been building practical AI workflows for business automation. My clearest
+example is JobHunterGPT, a human-in-the-loop Python prototype I built from
+scratch. It handles keyword extraction, fit scoring, cover letter drafting,
+and output review before anything is used. I don't have enterprise platform
+experience yet, but I can show you the work directly — how I built it, how
+I tested it, and how I improve it."
 
 ---
 
-**Word count:** ~75 words. Spoken time: 28–32 seconds.
+**Word count:** ~80 words. Spoken time: 28–33 seconds.
 
 **Every claim verified:**
 - "AI systems builder" — GPT Innovation by Attaf role
 - "five years" — confirmed
-- "AI-powered workflows for business automation" — resume
-- "JobHunterGPT... human-in-the-loop Python pipeline" — verified, local
-- "keyword extraction, fit scoring, cover letter generation, output review" — real modules
+- "practical AI workflows for business automation" — resume
+- "JobHunterGPT... human-in-the-loop Python prototype" — verified, local
+- "keyword extraction, fit scoring, cover letter drafting, output review" — real modules
 - "don't have enterprise platform experience yet" — honest
+- "I build and test my systems" — 70 tests, verified
 - "I can show you the work" — demo is scripted and ready
 
 **Practice note:** The phrase "human-in-the-loop" and "I can show you the
 work directly" are the two anchors. If you forget the middle, say those two
 things and you've communicated the most important points.
+
+The closing line is the anchor. Say it calmly. It proves honesty, confidence,
+and builder energy without exaggerating experience.
+
+**Practice rhythm:**
+
+1. I'm an AI systems builder based in Curaçao.
+2. Over the past five years, I've been building practical AI workflows for business automation.
+3. My clearest example is JobHunterGPT, a human-in-the-loop Python prototype I built from scratch.
+4. I don't have enterprise platform experience yet, but I can show you the work directly — how I built it, how I tested it, and how I improve it.
 
 ---
 

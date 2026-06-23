@@ -191,6 +191,9 @@ It doesn't invent qualifications. It shows I can design, build, test, document,
 and improve a multi-step AI workflow independently, and that I think carefully
 about what AI should and should not do on a person's behalf.
 
+I don't have enterprise platform experience yet, but I can show you the work
+directly — how I built it, how I tested it, and how I improve it.
+
 Happy to go deeper on any module, walk through the test cases, or answer
 questions about the design decisions."
 
