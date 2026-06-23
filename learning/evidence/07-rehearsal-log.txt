@@ -1,0 +1,54 @@
+JobHunterGPT Demo Rehearsal Log
+================================
+Goal: Complete three rehearsals before any live professional use.
+Demo script: learning/pack07-live-demo-output/five-minute-demo-script.md
+Command sheet: learning/pack07-live-demo-output/demo-command-sheet.md
+
+Do not use the Proofpoint application folder in any screen-share rehearsal.
+Use the practice package only: applications/gpt-innovation-by-attaf-ai-automation-specialist/
+
+================================
+
+Rehearsal #1
+------------
+Date:
+Duration:
+Did tests pass (py -m unittest discover -s tests -v):
+Did package reviewer run (READY_FOR_HUMAN_REVIEW):
+Mistakes:
+What to improve:
+Confidence score (1-10):
+
+================================
+
+Rehearsal #2
+------------
+Date:
+Duration:
+Did tests pass (py -m unittest discover -s tests -v):
+Did package reviewer run (READY_FOR_HUMAN_REVIEW):
+Mistakes:
+What to improve:
+Confidence score (1-10):
+
+================================
+
+Rehearsal #3
+------------
+Date:
+Duration:
+Did tests pass (py -m unittest discover -s tests -v):
+Did package reviewer run (READY_FOR_HUMAN_REVIEW):
+Mistakes:
+What to improve:
+Confidence score (1-10):
+
+================================
+
+Sign-off
+--------
+After Rehearsal #3 is complete and confidence score is 7 or higher,
+the demo is cleared for live professional use.
+
+Signed off:
+Date cleared:
