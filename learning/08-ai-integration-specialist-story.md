@@ -25,6 +25,7 @@ A candidate who can tell a clear, specific, honest story about their background
 wins over a candidate with a better resume who can't explain themselves in an interview.
 
 Sahid's background is genuinely unusual:
+
 - Self-taught AI systems builder in the Caribbean.
 - Ran hospitality operations for a real restaurant.
 - Built real estate projects and AI workflow tools in parallel.
@@ -56,11 +57,11 @@ Not: "This person is claiming experience they don't have."
 
 Draft 1 should answer all five of these questions in 90 seconds or less:
 
-  1. Who are you professionally? (One sentence.)
-  2. What have you built that is real and specific? (Two sentences, named projects.)
-  3. What is your technical depth? (One sentence — honest, specific tools.)
-  4. What is your honest gap and what are you doing about it? (Two sentences.)
-  5. Why this role? (One sentence — specific to AI Integration Specialist work.)
+1. Who are you professionally? (One sentence.)
+2. What have you built that is real and specific? (Two sentences, named projects.)
+3. What is your technical depth? (One sentence — honest, specific tools.)
+4. What is your honest gap and what are you doing about it? (Two sentences.)
+5. Why this role? (One sentence — specific to AI Integration Specialist work.)
 
 Total: ~90 seconds. Not shorter — specific is credible. Not longer — attention is limited.
 
@@ -72,13 +73,14 @@ Total: ~90 seconds. Not shorter — specific is credible. Not longer — attenti
 Draft the narrative following the structure above.
 
 Rules:
-  - Every claim must be verifiable from the resume, profile, or GitHub.
-  - Name specific projects: JobHunterGPT, Hospitality OS, BOSSA AI Ops Hub.
-  - Name specific tools: Python, Claude API, VS Code, GitHub, Supabase/PostgreSQL
-    (where applicable), Notion, Google Sheets.
-  - Do NOT claim Salesforce, Jira, Snowflake, Redshift, or cybersecurity expertise.
-  - DO mention that you are actively learning them (if Pack 02-04 are in progress).
-  - The gap acknowledgment must come BEFORE the interviewer asks — this builds trust.
+
+- Every claim must be verifiable from the resume, profile, or GitHub.
+- Name specific projects: JobHunterGPT, Hospitality OS, BOSSA AI Ops Hub.
+- Name specific tools: Python, Claude API, VS Code, GitHub, Supabase/PostgreSQL
+  (where applicable), Notion, Google Sheets.
+- Do NOT claim Salesforce, Jira, Snowflake, Redshift, or cybersecurity expertise.
+- DO mention that you are actively learning them (if Pack 02-04 are in progress).
+- The gap acknowledgment must come BEFORE the interviewer asks — this builds trust.
 
 Save as: `learning/evidence/08-core-narrative.txt`
 
@@ -101,13 +103,14 @@ Using the story from Task 1, write a LinkedIn About section that presents
 Sahid's background clearly for AI Integration Specialist roles.
 
 Requirements:
-  - First sentence: what you build, not your job title.
-  - Second paragraph: specific project names and outcomes.
-  - Third paragraph: what you're building toward and what roles you're targeting.
-  - Last line: a specific invitation ("If you're building AI workflows for enterprise
-    customers, I'd like to talk.")
-  - Maximum 300 words.
-  - Zero placeholder names, zero fabricated claims.
+
+- First sentence: what you build, not your job title.
+- Second paragraph: specific project names and outcomes.
+- Third paragraph: what you're building toward and what roles you're targeting.
+- Last line: a specific invitation ("If you're building AI workflows for enterprise
+  customers, I'd like to talk.")
+- Maximum 300 words.
+- Zero placeholder names, zero fabricated claims.
 
 Save as: `learning/evidence/08-linkedin-about.txt`
 
@@ -155,3 +158,22 @@ learning the enterprise tools this role requires — Salesforce, Jira, and data 
 design — because I see this role as where my AI systems background meets enterprise
 scale. I don't have everything yet, but I know what I'm building toward and I can
 show you the work."
+
+---
+
+## Pack 08 Output Created
+
+Status updated to **Evidence Ready** on 2026-06-23.
+
+The following files were created in `learning/pack08-ai-integration-story-output/`:
+
+- [ai-integration-specialist-story.md](pack08-ai-integration-story-output/ai-integration-specialist-story.md) — Core story in 30s / 60s / 90s versions
+- [resume-headline-and-summary.md](pack08-ai-integration-story-output/resume-headline-and-summary.md) — 5 headline options + 7 summary variants
+- [proofpoint-interview-story.md](pack08-ai-integration-story-output/proofpoint-interview-story.md) — 10 Proofpoint interview questions answered
+- [linkedin-profile-story.md](pack08-ai-integration-story-output/linkedin-profile-story.md) — Headlines, About sections, skills list
+- [recruiter-message.md](pack08-ai-integration-story-output/recruiter-message.md) — 3 outreach versions for AI integration roles
+- [hard-questions-and-safe-answers.md](pack08-ai-integration-story-output/hard-questions-and-safe-answers.md) — 10 hard interview questions with honest answers
+- [pack08-completion-report.md](pack08-ai-integration-story-output/pack08-completion-report.md) — Full completion report
+
+Next immediate action: Rehearse the demo. Practice the 30-second story.
+Log first rehearsal in `learning/evidence/07-rehearsal-log.txt`.

@@ -96,4 +96,4 @@ Complete Pack 07 before using this checklist in a professional setting.
 Mark as demo-ready only when all pre-demo checks pass AND three rehearsals
 are logged in `learning/evidence/07-rehearsal-log.txt`.
 
-**Current status: NOT DEMO READY — Pack 07 not started**
+**Current status: DEMO READY — Pack 07 Evidence Ready (2026-06-23). Three rehearsals required before live professional use. Log rehearsals in `learning/evidence/07-rehearsal-log.txt`.**
