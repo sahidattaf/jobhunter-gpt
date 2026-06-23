@@ -1,5 +1,7 @@
 # JobHunterGPT
+## Live Demo
 
+Public portfolio site: https://jobhunter-gpt-gamma.vercel.app/
 JobHunterGPT is a human-in-the-loop AI job-search operating system. It helps a candidate discover suitable roles, analyze job descriptions, extract ATS keywords, tailor truthful application materials, and track applications without submitting anything automatically.
 
 ## Guardrails
