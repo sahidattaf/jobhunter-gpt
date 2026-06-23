@@ -1,9 +1,9 @@
 Pack,Skill Area,Status,Started,Completed,Evidence File,Demo Ready,Notes
-01,Degree / Equivalent Experience Positioning,Not Started,,,,,Complete first — affects every application
+01,Degree / Equivalent Experience Positioning,Evidence Ready,2026-06-23,,learning/pack01-degree-positioning-output/,No,"5 years practical experience, Coursiv Claude/Gemini certificates, and JobHunterGPT positioning drafted."
 02,Salesforce Basics,Not Started,,,,,No prior experience — start from zero
 03,Jira Basics,Not Started,,,,,No prior experience — start from zero
 04,Cybersecurity Awareness,Not Started,,,,,No prior experience — awareness level only
 05,API / Database / Supabase / Data Integration,Not Started,,,,,Builds on verified existing experience
 06,Customer Success / Technical Account Management,Not Started,,,,,No prior experience — language and concepts
-07,Live Demo Readiness — JobHunterGPT,Not Started,,,,,Priority: needed for any technical interview
+07,Live Demo Readiness — JobHunterGPT,Evidence Ready,2026-06-23,,learning/pack07-live-demo-output/,Yes,"5-minute JobHunterGPT local demo script, command sheet, risk checklist, and interview answers drafted."
 08,AI Integration Specialist Story,Not Started,,,,,Priority: needed before any application submission

@@ -154,7 +154,7 @@ operational automation tools — including JobHunterGPT, which you're welcome to
 review on GitHub. I applied for roles that accept equivalent experience because
 the work I can demonstrate is more relevant than a transcript."
 
-*(Adjust once the actual timeline is confirmed.)*
+Note: Adjust once the actual timeline is confirmed.
 
 ---
 
@@ -167,3 +167,21 @@ Add an Education section to `resumes/master_resume.txt`:
   Portfolio: github.com/sahidattaf (confirm URL)
 
 Only add this once the timeline is confirmed and you are comfortable defending it.
+
+---
+
+## Pack 01 Output Created
+
+Status updated to **Evidence Ready** on 2026-06-23.
+
+The following files were created in `learning/pack01-degree-positioning-output/`:
+
+- [resume-education-section.md](pack01-degree-positioning-output/resume-education-section.md) — Exact wording for Education & Certifications resume section
+- [resume-summary-options.md](pack01-degree-positioning-output/resume-summary-options.md) — Three resume summary alternatives
+- [interview-answer-degree-equivalent.md](pack01-degree-positioning-output/interview-answer-degree-equivalent.md) — Practiced answers to 5 degree/background questions
+- [proofpoint-cover-letter-paragraph.md](pack01-degree-positioning-output/proofpoint-cover-letter-paragraph.md) — Three replacements for the weak cover letter paragraph
+- [linkedin-about-section.md](pack01-degree-positioning-output/linkedin-about-section.md) — Full LinkedIn About section draft
+- [do-not-claim-list.md](pack01-degree-positioning-output/do-not-claim-list.md) — What must not be claimed, with safe alternatives
+- [pack01-completion-report.md](pack01-degree-positioning-output/pack01-completion-report.md) — Full completion report and next steps
+
+Next recommended pack: **Pack 07 — Live Demo: JobHunterGPT**

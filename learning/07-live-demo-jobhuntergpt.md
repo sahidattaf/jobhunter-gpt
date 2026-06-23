@@ -167,3 +167,19 @@ Save as: `learning/evidence/07-rehearsal-log.txt`
 "I'd be happy to show you. I can share my screen and run the system live —
 it takes about 5 minutes to go from a job description to a reviewed package.
 Should I do that now?"
+
+---
+
+## Pack 07 Output Created
+
+Status updated to **Evidence Ready** on 2026-06-23.
+
+The following files were created in `learning/pack07-live-demo-output/`:
+
+- [five-minute-demo-script.md](pack07-live-demo-output/five-minute-demo-script.md) — Word-for-word demo script with timestamps
+- [demo-command-sheet.md](pack07-live-demo-output/demo-command-sheet.md) — Exact PowerShell commands with screen-share safety labels
+- [demo-risk-checklist.md](pack07-live-demo-output/demo-risk-checklist.md) — Pre-demo privacy checklist and fallback plan
+- [interview-demo-answer.md](pack07-live-demo-output/interview-demo-answer.md) — 6 interview questions with specific practiced answers
+- [pack07-completion-report.md](pack07-live-demo-output/pack07-completion-report.md) — Full completion report, 45-second intro, next steps
+
+Next recommended pack: **Pack 08 — AI Integration Specialist Story**
