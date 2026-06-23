@@ -35,13 +35,13 @@ Confidence score (1-10): 8
 
 Rehearsal #3
 ------------
-Date:
-Duration:
-Did tests pass (py -m unittest discover -s tests -v):
-Did package reviewer run (READY_FOR_HUMAN_REVIEW):
-Mistakes:
-What to improve:
-Confidence score (1-10):
+Date: 2026-06-23
+Duration: 7 minutes
+Did tests pass (py -m unittest discover -s tests -v): Yes — 70/70 tests passed.
+Did package reviewer run (READY_FOR_HUMAN_REVIEW): Yes — practice package reviewer returned READY_FOR_HUMAN_REVIEW.
+Mistakes: I kept the demo more focused and avoided overexplaining. I only need to keep my closing sentence calm and confident.
+What to improve: Keep the live demo simple: explain the problem, show the tests, show the reviewer, then close with the proof-of-work line.
+Confidence score (1-10): 8
 
 ================================
 
@@ -50,5 +50,7 @@ Sign-off
 After Rehearsal #3 is complete and confidence score is 7 or higher,
 the demo is cleared for live professional use.
 
-Signed off:
-Date cleared:
+Signed off: Yes
+Date cleared: 2026-06-23
+
+
