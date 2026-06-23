@@ -17,6 +17,10 @@ export default function Home() {
           readiness — while keeping a human in control at every step.
         </p>
 
+        <p className="mt-4 max-w-3xl text-sm text-slate-400">
+          Built with Python, Next.js, GitHub, Vercel, and a 70-test validation suite.
+        </p>
+
         <div className="mt-10 grid gap-4 sm:grid-cols-4">
           <Stat label="Modules" value="8+" />
           <Stat label="Tests Passing" value="70/70" />
@@ -45,9 +49,11 @@ export default function Home() {
             I&apos;m an AI systems builder based in Curaçao. Over the past five years,
             I&apos;ve been building practical AI workflows for business automation.
             My clearest example is JobHunterGPT, a human-in-the-loop Python prototype
-            I built from scratch. I don&apos;t have enterprise platform experience yet,
-            but I can show you the work directly — how I built it, how I tested it,
-            and how I improve it.
+            that prepares job application packages without removing human review.
+            It handles keyword extraction, fit scoring, cover letter drafting, and
+            package review before anything is used. I don&apos;t have enterprise
+            platform experience yet, but I can show you the work directly — how I
+            built it, how I tested it, and how I improve it.
           </p>
         </section>
 
